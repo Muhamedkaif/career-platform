@@ -21,6 +21,7 @@ public class StudentController {
         return studentService.saveStudent(student);
     }
 
+
     @GetMapping("/all")
     public List<student> getAllStudents() {
         return studentService.getAllStudents();
