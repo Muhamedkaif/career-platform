@@ -1,9 +1,11 @@
 package career_platform.Backend.service;
 
+import career_platform.Backend.entity.student;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import career_platform.Backend.repositories.StudentRepository;
 
 import java.util.Map;
 
@@ -11,18 +13,34 @@ import java.util.Map;
 public class ResumeService {
 
     private final Cloudinary cloudinary;
+    private final StudentRepository studentRepository;
 
-    public ResumeService(Cloudinary cloudinary) {
+    public ResumeService(Cloudinary cloudinary , StudentRepository studentRepository) {
         this.cloudinary = cloudinary;
+        this.studentRepository = studentRepository;
     }
 
-    public String uploadResume(MultipartFile file) throws Exception {
+    public String uploadResume(MultipartFile file , String email) throws Exception {
 
         Map uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
-                ObjectUtils.emptyMap()
+                ObjectUtils.asMap(
+                        "folder", "resumes/",   // ✅ folder name
+                        "public_id", email + "_resume" // optional unique name
+                )
         );
 
-        return uploadResult.get("url").toString();
+
+        String url = uploadResult.get("url").toString();
+
+        // 🔍 Find student
+        student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 💾 Save URL
+        student.setResumeUrl(url);
+        studentRepository.save(student);
+
+        return url;
     }
 }
