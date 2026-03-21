@@ -3,7 +3,7 @@ package career_platform.Backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-
+@Table(name="internship")
 public class Internship {
 
     @Id
@@ -23,7 +23,6 @@ public class Internship {
         this.role = role;
         this.requiredSkills = requiredSkills;
         this.description = description;
-
     }
 
     public Long getId() {

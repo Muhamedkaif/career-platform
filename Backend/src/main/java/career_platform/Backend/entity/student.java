@@ -5,12 +5,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name="student")
 public class student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotBlank(message = "username required")
     private String name;
     @Email(message = "invalid email format")
@@ -18,13 +18,19 @@ public class student {
     private String email;
     @NotBlank(message = "password is required")
     private String password;
+    private String dept;
     private String githubLink;
     private String skills;
     private String resumeUrl;
+    private float cgpa;
+    private String phone;
+    private String description;
+    private String rollno;
 
     public student() {}
 
-    public student(Long id, String name, String email, String githubLink, String skills, String resumeUrl,String password) {
+    public student(Long id, String name, String email, String githubLink, String skills, String resumeUrl,String password , String dept, float cgpa,String phone, String description, String rollno)
+    {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -32,6 +38,42 @@ public class student {
         this.skills = skills;
         this.resumeUrl = resumeUrl;
         this.password = password;
+        this.dept = dept;
+        this.cgpa = cgpa;
+        this.phone = phone;
+        this.description = description;
+        this.rollno = rollno;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+    public String getDept() {
+        return dept;
+    }
+    public void setRollno(String rollno) {
+        this.rollno = rollno;
+    }
+    public String getRollno() {
+        return rollno;
+    }
+    public void setCgpa(float cgpa) {
+        this.cgpa = cgpa;
+    }
+    public float getCgpa() {
+        return cgpa;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public String getDescription() {
+        return description;
     }
 
     public Long getId() { return id; }

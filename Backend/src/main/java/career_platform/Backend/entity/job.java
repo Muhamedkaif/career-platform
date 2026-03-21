@@ -3,6 +3,7 @@ package career_platform.Backend.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name="job")
 public class job {
 
     @Id

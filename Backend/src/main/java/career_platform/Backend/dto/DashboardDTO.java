@@ -5,15 +5,20 @@ public class DashboardDTO {
     private String email;
     private String name;
     private String message;
+    private String dept;
 
-    public DashboardDTO(String email, String name, String message) {
+    public DashboardDTO(String email,String dept, String name, String message) {
         this.email = email;
         this.name = name;
         this.message = message;
+        this.dept = dept;
     }
 
     public String getEmail() {
         return email;
+    }
+    public String getDept() {
+        return dept;
     }
 
     public String getName() {
