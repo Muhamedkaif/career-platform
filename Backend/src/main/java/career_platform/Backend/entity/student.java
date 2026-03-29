@@ -22,14 +22,14 @@ public class student {
     private String githubLink;
     private String skills;
     private String resumeUrl;
-    private float cgpa;
+    private Float cgpa;
     private String phone;
     private String description;
     private String rollno;
 
     public student() {}
 
-    public student(Long id, String name, String email, String githubLink, String skills, String resumeUrl,String password , String dept, float cgpa,String phone, String description, String rollno)
+    public student(Long id, String name, String email, String githubLink, String skills, String resumeUrl,String password , String dept, Float cgpa,String phone, String description, String rollno)
     {
         this.id = id;
         this.name = name;
@@ -57,10 +57,10 @@ public class student {
     public String getRollno() {
         return rollno;
     }
-    public void setCgpa(float cgpa) {
+    public void setCgpa(Float cgpa) {
         this.cgpa = cgpa;
     }
-    public float getCgpa() {
+    public Float getCgpa() {
         return cgpa;
     }
     public void setPhone(String phone) {

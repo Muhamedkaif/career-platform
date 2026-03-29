@@ -26,12 +26,14 @@ public class ResumeService {
                 file.getBytes(),
                 ObjectUtils.asMap(
                         "folder", "resumes/",   // ✅ folder name
-                        "public_id", email + "_resume" // optional unique name
+                        "public_id", email + "_resume" ,
+                        "resource_type", "raw",
+                        "type", "upload"  // optional unique name
                 )
         );
 
 
-        String url = uploadResult.get("url").toString();
+        String url = uploadResult.get("secure_url").toString();
 
         // 🔍 Find student
         student student = studentRepository.findByEmail(email)
