@@ -30,7 +30,7 @@ function ProtectedRoute({ children, allowedRole }) {
 
   if (loading) return <Loader fullPage />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (allowedRole && role !== allowedRole) return <Navigate to={role === 'admin' ? '/admin' : '/students'} replace />;
+  if (allowedRole && role !== allowedRole) return <Navigate to={role === 'admin' ? '/admin/dashboard' : '/students'} replace />;
 
   return children;
 }

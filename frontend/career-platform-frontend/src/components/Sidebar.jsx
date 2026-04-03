@@ -25,7 +25,7 @@ export default function Sidebar() {
   const { role, user, logout } = useAuth();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const links = role === 'faculty' ? facultyLinks : studentLinks;
+  const links = role === 'admin' ? facultyLinks : studentLinks;
 
   const handleLogout = () => {
     logout();

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
+import ritImage from '../../assets/rit-chennai.jpg';
 
 const stats = [
   { value: '850+', label: 'Placements' },
@@ -166,11 +167,25 @@ const handleSubmit = async (e) => {
               borderRadius: 'var(--radius-xl)', padding: '12px 24px',
             }}>
               <div style={{
-                width: 40, height: 40, borderRadius: 10,
-                background: 'var(--accent-primary)', display: 'flex',
-                alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontWeight: 800, fontSize: 20,
-              }}>C</div>
+  width: 40,
+  height: 40,
+  borderRadius: 10,
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'var(--accent-primary)'
+}}>
+  <img
+    src={ritImage}
+    alt="Logo"
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover'
+    }}
+  />
+</div>
               <div style={{ textAlign: 'left' }}>
                 <div style={{ color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px' }}>CareerOS</div>
                 <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Placement Intelligence</div>

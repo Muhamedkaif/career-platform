@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import ritImage from '../../assets/rit-chennai.jpg';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -9,9 +10,25 @@ export default function LandingPage() {
         @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
-      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 28, fontWeight: 900, marginBottom: 24, animation: 'floatUp 3s ease-in-out infinite' }}>
-        C
-      </div>
+      <div style={{
+  width: 120,
+  height: 120,
+  borderRadius: 20,
+  overflow: 'hidden',
+  marginBottom: 24,
+  animation: 'floatUp 3s ease-in-out infinite',
+  boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+}}>
+  <img
+    src={ritImage}
+    alt="RIT Chennai"
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover'
+    }}
+  />
+</div>
       <h1 style={{ color: '#fff', fontSize: 52, fontWeight: 900, letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 16, animation: 'fadeIn 0.6s ease-out 0.1s both' }}>
         CareerOS
       </h1>
