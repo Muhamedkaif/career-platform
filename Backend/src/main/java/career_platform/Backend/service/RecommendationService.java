@@ -32,10 +32,15 @@ public class RecommendationService {
 
         if (student == null) return recommended;
 
-        for (job job : jobs) {
-            if (job.getRequiredSkills().toLowerCase()
-                    .contains(student.getSkills().toLowerCase())) {
+        String studentSkills = student.getSkills() == null ? "" : student.getSkills().toLowerCase();
 
+        for (job job : jobs) {
+            boolean hasSkillMatch = job.getSkills() != null && job.getSkills().stream()
+                    .filter(skill -> skill != null && !skill.isBlank())
+                    .map(String::toLowerCase)
+                    .anyMatch(studentSkills::contains);
+
+            if (hasSkillMatch) {
                 recommended.add(job);
             }
         }
