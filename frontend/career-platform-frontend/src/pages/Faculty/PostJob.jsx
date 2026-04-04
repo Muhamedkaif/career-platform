@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Card from '../../components/Card';
-import { jobService } from '../../services/jobService';
+import api from '../../services/axiosInstance';
 
 const SKILL_OPTIONS = ['React', 'Python', 'Node.js', 'Java', 'SQL', 'MongoDB', 'AWS', 'Docker', 'Kubernetes', 'DSA', 'TypeScript', 'Go', 'Rust'];
 
+const initialForm = {
+  title: '',
+  company: '',
+  location: '',
+  type: 'Full-time',
+  salary: '',
+  description: '',
+  requirements: '',
+  deadline: '',
+  skills: [],
+};
+
 export default function PostJob() {
-  const [form, setForm] = useState({ title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', requirements: '', deadline: '', skills: [] });
+  const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
 
-  const set = (key, val) => { setForm(f => ({ ...f, [key]: val })); setErrors(e => ({ ...e, [key]: '' })); };
+  const set = (key, val) => {
+    setForm((f) => ({ ...f, [key]: val }));
+    setErrors((e) => ({ ...e, [key]: '' }));
+    setSubmitError('');
+  };
 
   const toggleSkill = (skill) => {
-    setForm(f => ({ ...f, skills: f.skills.includes(skill) ? f.skills.filter(s => s !== skill) : [...f.skills, skill] }));
+    setForm((f) => ({
+      ...f,
+      skills: f.skills.includes(skill) ? f.skills.filter((s) => s !== skill) : [...f.skills, skill],
+    }));
+    setErrors((e) => ({ ...e, skills: '' }));
+    setSubmitError('');
   };
 
   const validate = () => {
@@ -28,13 +50,38 @@ export default function PostJob() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccess(false);
+    setSubmitError('');
+
     const errs = validate();
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+
+    const token =
+      localStorage.getItem('accessToken') ||
+      localStorage.getItem('token') ||
+      localStorage.getItem('jwtToken');
+
     setSubmitting(true);
+
     try {
-      await new Promise(r => setTimeout(r, 1000));
+      await api.post('/jobs/create', form, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
       setSuccess(true);
-      setForm({ title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', requirements: '', deadline: '', skills: [] });
+      setErrors({});
+      setForm(initialForm);
+    } catch (error) {
+      const backendMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        (typeof error.response?.data === 'string' ? error.response.data : '') ||
+        'Failed to post job.';
+
+      setSubmitError(backendMessage);
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +104,13 @@ export default function PostJob() {
       <div style={{ padding: '24px 32px', maxWidth: 800, margin: '0 auto' }}>
         {success && (
           <div style={{ padding: '14px 18px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 'var(--radius-default)', marginBottom: 20, color: 'var(--signal-success)', fontWeight: 600, fontSize: 14 }}>
-            ✅ Job posted successfully! Students will be notified.
+            Job posted successfully! Students will be notified.
+          </div>
+        )}
+
+        {submitError && (
+          <div style={{ padding: '14px 18px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--radius-default)', marginBottom: 20, color: 'var(--signal-critical)', fontWeight: 600, fontSize: 14 }}>
+            {submitError}
           </div>
         )}
 
@@ -92,7 +145,7 @@ export default function PostJob() {
               </div>
               <div>
                 <label style={labelStyle}>Salary / CTC</label>
-                <input value={form.salary} onChange={e => set('salary', e.target.value)} placeholder="₹12–18 LPA" style={inputStyle('salary')} onFocus={e => e.target.style.borderColor = 'var(--accent-primary)'} onBlur={e => e.target.style.borderColor = 'rgba(15,23,42,0.1)'} />
+                <input value={form.salary} onChange={e => set('salary', e.target.value)} placeholder="₹12-18 LPA" style={inputStyle('salary')} onFocus={e => e.target.style.borderColor = 'var(--accent-primary)'} onBlur={e => e.target.style.borderColor = 'rgba(15,23,42,0.1)'} />
               </div>
               <div>
                 <label style={labelStyle}>Application Deadline *</label>
@@ -139,7 +192,7 @@ export default function PostJob() {
           </Card>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-            <button type="button" onClick={() => setForm({ title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', requirements: '', deadline: '', skills: [] })}
+            <button type="button" onClick={() => { setForm(initialForm); setErrors({}); setSuccess(false); setSubmitError(''); }}
               style={{ padding: '10px 20px', background: 'transparent', border: '1px solid rgba(15,23,42,0.12)', borderRadius: 'var(--radius-default)', fontSize: 14, cursor: 'pointer', color: 'var(--text-secondary)' }}>
               Clear
             </button>

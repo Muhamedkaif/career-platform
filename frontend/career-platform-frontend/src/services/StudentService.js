@@ -9,12 +9,12 @@ export const studentService = {
   getJobs: (filters) => api.get('/student/jobs', { params: filters }),
   getInternships: (filters) => api.get('/student/internships', { params: filters }),
   getCertificates: () => api.get('/student/certificates'),
-  getResume: () => api.get('/student/resume'),
+  getResume: () => api.get('/resume/get'),
+  analyzeRecommendations: () => api.post('/ai/analyze'),
   uploadResume: (file) => {
     const form = new FormData();
-    form.append('resume', file);
-    return api.post('/student/resume', form, { 
-      headers: { 'Content-Type': 'multipart/form-data' } 
-    });
+    form.append('file', file);
+    return api.post('/resume/upload', form);
   },
+  uploadGithub: (link) => api.post('/students/github', { githubLink: link }),
 };

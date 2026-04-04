@@ -11,22 +11,8 @@ app = FastAPI(title="AI Career Recommendation Engine")
 # -----------------------------
 # CONFIG (switch later to API LLM)
 # -----------------------------
-USE_OLLAMA = False
+USE_OLLAMA = True
 OLLAMA_URL = "http://localhost:11434/api/generate"
-
-# -----------------------------
-# SAMPLE DATA (replace with DB later)
-# -----------------------------
-JOBS = [
-    {"role": "Backend Developer", "skills": ["python", "flask", "sql", "api"]},
-    {"role": "Frontend Developer", "skills": ["react", "javascript", "html", "css"]},
-    {"role": "ML Engineer", "skills": ["python", "machine learning", "pandas"]}
-]
-
-INTERNSHIPS = [
-    {"role": "Backend Intern", "skills": ["python", "api", "sql"]},
-    {"role": "Web Intern", "skills": ["html", "css", "javascript"]}
-]
 
 # -----------------------------
 # PDF TEXT EXTRACTION
@@ -162,12 +148,35 @@ def suggest_learning(missing: List[str]) -> List[str]:
 
 
 # -----------------------------
+# NORMALIZE DB INPUT
+# -----------------------------
+def normalize_roles(items: List[Dict], role_key: str = "role") -> List[Dict]:
+    normalized = []
+
+    for item in items:
+        role = item.get(role_key) or item.get("title") or ""
+        skills = item.get("skills") or []
+
+        if isinstance(skills, str):
+            skills = [s.strip().lower() for s in skills.split(",") if s.strip()]
+        else:
+            skills = [str(s).strip().lower() for s in skills if str(s).strip()]
+
+        normalized.append({
+            "role": role,
+            "skills": normalize_skills(skills)
+        })
+
+    return normalized
+
+
+# -----------------------------
 # FALLBACK SYSTEM (CORE)
 # -----------------------------
-def fallback_recommendation(skills: List[str]) -> Dict:
-    result = {"jobs": [], "internships": []}
+def fallback_recommendation(skills: List[str], jobs: List[Dict], internships: List[Dict]) -> Dict:
+    result = {"current_skills": skills, "jobs": [], "internships": []}
 
-    for job in JOBS:
+    for job in jobs:
         score = weighted_score(skills, job["skills"])
         missing = list(set(job["skills"]) - set(skills))
 
@@ -179,7 +188,7 @@ def fallback_recommendation(skills: List[str]) -> Dict:
             "recommended_courses": suggest_learning(missing)
         })
 
-    for intern in INTERNSHIPS:
+    for intern in internships:
         score = weighted_score(skills, intern["skills"])
         missing = list(set(intern["skills"]) - set(skills))
 
@@ -204,7 +213,9 @@ def fallback_recommendation(skills: List[str]) -> Dict:
 @app.post("/analyze")
 async def analyze(
     github_username: str = Form(...),
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    jobs: str = Form(...),
+    internships: str = Form(...)
 ):
 
     # Save resume
@@ -219,6 +230,8 @@ async def analyze(
     resume_skills = extract_skills_from_resume(resume_text)
 
     combined_skills = normalize_skills(resume_skills + github_skills)
+    parsed_jobs = normalize_roles(json.loads(jobs), "role")
+    parsed_internships = normalize_roles(json.loads(internships), "role")
 
     # -----------------------------
     # STRICT PROMPT
@@ -236,13 +249,14 @@ Skills:
 {combined_skills}
 
 Jobs:
-{JOBS}
+{parsed_jobs}
 
 Internships:
-{INTERNSHIPS}
+{parsed_internships}
 
 FORMAT:
 {{
+ "current_skills": [],
  "jobs": [{{"role":"","score":0,"missing_skills":[],"explanation":""}}],
  "internships": [{{"role":"","score":0,"missing_skills":[],"explanation":""}}]
 }}
@@ -252,6 +266,9 @@ FORMAT:
     cleaned = clean_llm_output(llm_output)
 
     if cleaned is None:
-        return fallback_recommendation(combined_skills)
+        return fallback_recommendation(combined_skills, parsed_jobs, parsed_internships)
+
+    if "current_skills" not in cleaned:
+        cleaned["current_skills"] = combined_skills
 
     return cleaned

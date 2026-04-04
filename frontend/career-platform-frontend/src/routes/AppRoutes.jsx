@@ -16,6 +16,7 @@ import Jobs from '../pages/Student/Jobs';
 import Internships from '../pages/Student/Internships';
 import Certificates from '../pages/Student/Certificates';
 import Resume from '../pages/Student/Resume';
+import AIRecommendations from '../pages/Student/AIRecommendations';
 
 import FacultyDashboard from '../pages/Faculty/FacultyDashboard';
 import Students from '../pages/Faculty/Students';
@@ -91,6 +92,11 @@ export default function AppRoutes() {
       <Route path="/students/resume" element={
         <ProtectedRoute allowedRole="student">
           <DashboardLayout><Resume /></DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/students/ai-recommendations" element={
+        <ProtectedRoute allowedRole="student">
+          <DashboardLayout><AIRecommendations /></DashboardLayout>
         </ProtectedRoute>
       } />
 

@@ -52,6 +52,7 @@ const handleSubmit = async (e) => {
     console.log("Sending:", { email, password, userRole });
 
     // ✅ Store auth data
+    localStorage.setItem("accessToken", token);
     localStorage.setItem("token", token);
     localStorage.setItem("role", userRole);
     console.log(token);

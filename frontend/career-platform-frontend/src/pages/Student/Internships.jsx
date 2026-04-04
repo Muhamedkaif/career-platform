@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import Card from '../../components/Card';
 import { Skeleton } from '../../components/Loader';
-
-const mockInternships = [
-  { id: 1, title: 'SDE Intern', company: 'Amazon', duration: '3 months', stipend: '₹50k/mo', location: 'Bangalore', match: 88, status: 'Open', urgency: 'high', deadline: 'Dec 15', skills: ['Python', 'AWS', 'DSA'], color: '#FF9900' },
-  { id: 2, title: 'Product Intern', company: 'Flipkart', duration: '6 months', stipend: '₹40k/mo', location: 'Bangalore', match: 75, status: 'Open', urgency: 'normal', deadline: 'Dec 20', skills: ['Product Thinking', 'SQL', 'Excel'], color: '#2874F0' },
-  { id: 3, title: 'ML Research Intern', company: 'Google DeepMind', duration: '3 months', stipend: '₹80k/mo', location: 'Remote', match: 65, status: 'Open', urgency: 'critical', deadline: 'Dec 10', skills: ['Python', 'PyTorch', 'Research'], color: '#4285F4' },
-  { id: 4, title: 'Frontend Intern', company: 'Razorpay', duration: '2 months', stipend: '₹35k/mo', location: 'Bangalore', match: 92, status: 'Applied', urgency: 'normal', deadline: 'Submitted', skills: ['React', 'TypeScript', 'CSS'], color: '#2D9CDB' },
-];
+import { jobService } from '../../services/jobService';
 
 const statusColors = {
   Open: { bg: '#F0FDF4', text: '#059669', border: '#BBF7D0' },
@@ -24,7 +18,13 @@ export default function Internships() {
   const [applied, setApplied] = useState(new Set(['4']));
 
   useEffect(() => {
-    setTimeout(() => { setData(mockInternships); setLoading(false); }, 700);
+    jobService.getAllInternships().then(response => {
+      setData(response.data);
+    }).catch(error => {
+      console.error('Error fetching internships:', error);
+    }).finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   const filtered = data.filter(i => {

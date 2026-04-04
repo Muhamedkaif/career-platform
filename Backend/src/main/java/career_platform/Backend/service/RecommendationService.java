@@ -57,7 +57,7 @@ public class RecommendationService {
         if(student == null) return recommended;
 
         for(Internship internship : internships){
-            if(internship.getRequiredSkills().toLowerCase()
+            if(internship.getSkills()
                     .contains(student.getSkills().toLowerCase())){
                 recommended.add(internship);
             }

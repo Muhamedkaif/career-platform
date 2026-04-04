@@ -9,7 +9,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('accessToken');
+    const storedToken =
+      localStorage.getItem('accessToken') ||
+      localStorage.getItem('token') ||
+      localStorage.getItem('jwtToken');
     const storedUser = localStorage.getItem('user');
     const storedRole = localStorage.getItem('role');
     if (storedToken && storedUser) {
@@ -25,6 +28,7 @@ export function AuthProvider({ children }) {
     setRole(userRole);
     setToken(accessToken);
     localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('token', accessToken);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('role', userRole);
   }, []);
@@ -34,6 +38,8 @@ export function AuthProvider({ children }) {
     setRole(null);
     setToken(null);
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('jwtToken');
     localStorage.removeItem('user');
     localStorage.removeItem('role');
   }, []);

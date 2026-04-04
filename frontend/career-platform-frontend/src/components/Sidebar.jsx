@@ -8,6 +8,7 @@ const studentLinks = [
   { to: '/students/skills', label: 'Skills', icon: '◈' },
   { to: '/students/jobs', label: 'Jobs', icon: '◎' },
   { to: '/students/internships', label: 'Internships', icon: '◷' },
+  { to: '/students/ai-recommendations', label: 'AI Analyze', icon: '✦' },
   { to: '/students/certificates', label: 'Certificates', icon: '◆' },
   { to: '/students/resume', label: 'Resume', icon: '◻' },
 ];
@@ -48,7 +49,6 @@ export default function Sidebar() {
       boxShadow: 'var(--shadow-1)',
       flexShrink: 0,
     }}>
-      {/* Logo */}
       <div style={{
         padding: '20px 16px 16px',
         display: 'flex',
@@ -71,7 +71,6 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Nav Links */}
       <nav style={{ flex: 1, padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {links.map(link => (
           <NavLink
@@ -112,7 +111,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* User + Collapse */}
       <div style={{ padding: '12px 8px', borderTop: '1px solid rgba(15,23,42,0.06)', display: 'flex', flexDirection: 'column', gap: 4 }}>
         <button
           onClick={() => setCollapsed(c => !c)}

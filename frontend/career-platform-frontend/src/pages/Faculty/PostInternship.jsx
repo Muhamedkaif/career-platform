@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Card from '../../components/Card';
+import { jobService } from '../../services/jobService';
 
 const SKILL_OPTIONS = ['React', 'Python', 'Node.js', 'Java', 'SQL', 'MongoDB', 'AWS', 'Docker', 'DSA', 'TypeScript', 'Machine Learning', 'Data Analysis', 'UI/UX'];
 
@@ -26,10 +27,22 @@ export default function PostInternship() {
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setSuccess(true);
-    setForm({ title: '', company: '', location: '', duration: '', stipend: '', description: '', deadline: '', skills: [], openings: '' });
-    setSubmitting(false);
+    try {
+      const data = {
+        ...form,
+        deadline: form.deadline, // assuming backend handles date string
+        openings: parseInt(form.openings) || 0,
+        skills: form.skills
+      };
+      await jobService.postInternship(data);
+      setSuccess(true);
+      setForm({ title: '', company: '', location: '', duration: '', stipend: '', description: '', deadline: '', skills: [], openings: '' });
+    } catch (error) {
+      console.error('Error posting internship:', error);
+      // Optionally set an error state
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputStyle = (key) => ({
